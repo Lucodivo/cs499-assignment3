@@ -2,4 +2,4 @@
 ##intructions##
 - mvn install
 - mvn compile
-- mvn exec:java -Dexec.mainClass="WordCount" -Dexec.args="input.txt output"
+- mvn exec:java -Dexec.mainClass="WordCount" -Dexec.args="a3-dataset/TrainingRatings.txt output"
