@@ -14,12 +14,16 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.PriorityQueue;
 
 // docker pull test comment
 
 public class NetflixMapReduce extends Configured implements Tool{
 
+    private final static String a3DataSetDir = "a3-dataset";
+    private final static String movieTitles = a3DataSetDir + "/movie_titles.txt";
+    private final static String trainingRatings = a3DataSetDir + "/TrainingRatings.txt";
     private final static String numRevDir = "/NumReviews";
     private final static String avgRatDir = "/AvgRatings";
     private final static String numRevResults = numRevDir + "/part-r-00000";
@@ -39,6 +43,7 @@ public class NetflixMapReduce extends Configured implements Tool{
         int returnValue = numReviewsMapReduce(args[0], args[1]);
         returnValue = (avgRatingsMapReduce(args[0], args[1]) == 1) && (returnValue == 0) ? 0:1;
 
+        System.out.println();
         calcTop10Movies(args[1]);
         System.out.println();
         calcTop10Reviewers(args[1]);
@@ -107,19 +112,48 @@ public class NetflixMapReduce extends Configured implements Tool{
         /// Calculate results of top 10 highest average movies
 
         PriorityQueue<Result> avgRatingQueue = new PriorityQueue<Result>(100, new ResultComparator());
+        HashMap<String, Result> avgRatingsHashMap = new HashMap<String, Result>();
         BufferedReader reader = null;
 
         try {
             File file = new File(new Path(outputPath + avgRatResults).toString());
+            //File file = new File(new Path("avgRatings.txt").toString());
             reader = new BufferedReader(new FileReader(file));
 
             String line;
             while((line = reader.readLine()) != null) {
                 String [] tokens = line.split("\t");
-                avgRatingQueue.add(new Result(tokens[0], Double.parseDouble(tokens[1])));
+                Result r = new Result(tokens[0], Double.parseDouble(tokens[1]));
+                avgRatingsHashMap.put(r.getId(), r);
+                avgRatingQueue.add(r);
             }
         } catch (IOException e){
             e.printStackTrace();
+        } finally {
+            try {
+                reader.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        reader = null;
+
+        try {
+            File file = new File(new Path(movieTitles).toString());
+            reader = new BufferedReader(new FileReader(file));
+
+            String line;
+            while((line = reader.readLine()) != null) {
+                String [] tokens = line.split(",");
+                Result r = avgRatingsHashMap.get(tokens[0]);
+                if(r != null) {
+                    r.setId(tokens[2]);
+                }
+            }
+
+        } catch (IOException e){
+            e.printStackTrace();
+            System.out.println("Failed to read output number of reviews");
         } finally {
             try {
                 reader.close();
@@ -143,15 +177,19 @@ public class NetflixMapReduce extends Configured implements Tool{
 
         try {
             File file = new File(new Path(outputPath + numRevResults).toString());
+            //File file = new File(new Path("numReviews.txt").toString());
             reader = new BufferedReader(new FileReader(file));
 
             String line;
             while((line = reader.readLine()) != null) {
                 String [] tokens = line.split("\t");
-                numReviewsQueue.add(new Result(tokens[0], Double.parseDouble(tokens[1])));
+                Result r = new Result(tokens[0], Double.parseDouble(tokens[1]));
+                numReviewsQueue.add(r);
             }
+
         } catch (IOException e){
             e.printStackTrace();
+            System.out.println("Failed to read output number of reviews");
         } finally {
             try {
                 reader.close();
