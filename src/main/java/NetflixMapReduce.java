@@ -27,6 +27,7 @@ public class NetflixMapReduce extends Configured implements Tool{
 
         /*
         NUM REVIEWS MAPREDUCE
+         */
 
         Job numReviewsJob = new Job();
         numReviewsJob.setJarByClass(NetflixMapReduce.class);
@@ -49,7 +50,6 @@ public class NetflixMapReduce extends Configured implements Tool{
         } else if(!numReviewsJob.isSuccessful()) {
             System.out.println("Num Reviews By User Counter job was not successful");
         }
-         */
 
         /*
         AVERAGE RATINGS MAPREDUCE
@@ -69,7 +69,7 @@ public class NetflixMapReduce extends Configured implements Tool{
         avgRatingJob.setMapperClass(AverageRatingMapClass.class);
         avgRatingJob.setReducerClass(AverageRatingReduceClass.class);
 
-        int returnValue = avgRatingJob.waitForCompletion(true) ? 0:1;
+        returnValue = avgRatingJob.waitForCompletion(true) && (returnValue == 0) ? 0:1;
 
         if(avgRatingJob.isSuccessful()) {
             System.out.println("Average Rating job was successful");

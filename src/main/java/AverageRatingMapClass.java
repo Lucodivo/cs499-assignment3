@@ -26,15 +26,5 @@ public class AverageRatingMapClass extends Mapper<LongWritable, Text, Text, Doub
         double rating = Double.parseDouble(st.nextToken());
         // record single occurrence of review by user specified by userID
         context.write(word,new DoubleWritable(rating));
-
-/*
-        String line = value.toString();
-        StringTokenizer st = new StringTokenizer(line," ");
-
-        while(st.hasMoreTokens()){
-            word.set(st.nextToken());
-            context.write(word,one);
-        }
-*/
     }
 }
