@@ -24,26 +24,56 @@ public class NetflixMapReduce extends Configured implements Tool{
             return -1;
         }
 
-        Job job = new Job();
-        job.setJarByClass(NetflixMapReduce.class);
-        job.setJobName("Num Reviews By User Counter");
+        /*
+        NUM REVIEWS MAPREDUCE
 
-        FileInputFormat.addInputPath(job, new Path(args[0]));
-        FileOutputFormat.setOutputPath(job, new Path(args[1]));
+        Job numReviewsJob = new Job();
+        numReviewsJob.setJarByClass(NetflixMapReduce.class);
+        numReviewsJob.setJobName("Num Reviews By User Counter");
 
-        job.setOutputKeyClass(Text.class);
-        job.setOutputValueClass(IntWritable.class);
-        job.setOutputFormatClass(TextOutputFormat.class);
+        FileInputFormat.addInputPath(numReviewsJob, new Path(args[0]));
+        FileOutputFormat.setOutputPath(numReviewsJob, new Path(args[1] + "/NumReviews"));
 
-        job.setMapperClass(NumReviewsMapClass.class);
-        job.setReducerClass(NumReviewsReduceClass.class);
+        numReviewsJob.setOutputKeyClass(Text.class);
+        numReviewsJob.setOutputValueClass(IntWritable.class);
+        numReviewsJob.setOutputFormatClass(TextOutputFormat.class);
 
-        int returnValue = job.waitForCompletion(true) ? 0:1;
+        numReviewsJob.setMapperClass(NumReviewsMapClass.class);
+        numReviewsJob.setReducerClass(NumReviewsReduceClass.class);
 
-        if(job.isSuccessful()) {
+        int returnValue = numReviewsJob.waitForCompletion(true) ? 0:1;
+
+        if(numReviewsJob.isSuccessful()) {
             System.out.println("Num Reviews By User Counter job was successful");
-        } else if(!job.isSuccessful()) {
+        } else if(!numReviewsJob.isSuccessful()) {
             System.out.println("Num Reviews By User Counter job was not successful");
+        }
+         */
+
+        /*
+        AVERAGE RATINGS MAPREDUCE
+         */
+
+        Job avgRatingJob = new Job();
+        avgRatingJob.setJarByClass(NetflixMapReduce.class);
+        avgRatingJob.setJobName("Average Rating Counter");
+
+        FileInputFormat.addInputPath(avgRatingJob, new Path(args[0]));
+        FileOutputFormat.setOutputPath(avgRatingJob, new Path(args[1] + "/AverageRating"));
+
+        avgRatingJob.setOutputKeyClass(Text.class);
+        avgRatingJob.setOutputValueClass(IntWritable.class);
+        avgRatingJob.setOutputFormatClass(TextOutputFormat.class);
+
+        avgRatingJob.setMapperClass(AverageRatingMapClass.class);
+        avgRatingJob.setReducerClass(AverageRatingReduceClass.class);
+
+        int returnValue = avgRatingJob.waitForCompletion(true) ? 0:1;
+
+        if(avgRatingJob.isSuccessful()) {
+            System.out.println("Average Rating job was successful");
+        } else if(!avgRatingJob.isSuccessful()) {
+            System.out.println("Average Rating job was not successful");
         }
 
         return returnValue;

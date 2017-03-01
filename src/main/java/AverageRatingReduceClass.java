@@ -1,20 +1,24 @@
 import java.io.IOException;
 
+import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
 
-public class HighestAverageReduceClass extends Reducer<Text,IntWritable,Text,IntWritable> {
+public class AverageRatingReduceClass extends Reducer<Text,IntWritable,Text,DoubleWritable> {
 
     @Override
     protected void reduce(Text key, Iterable<IntWritable> values, Context context)
             throws IOException, InterruptedException {
 
-        int sum = 0;
+        double sum = 0;
+        double totalReviews = 0;
         for (IntWritable val : values) {
             sum += val.get();
+            ++totalReviews;
         }
 
-        context.write(key, new IntWritable(sum));
+        double avgRating = sum / totalReviews;
+        context.write(key, new DoubleWritable(avgRating));
     }
 }
