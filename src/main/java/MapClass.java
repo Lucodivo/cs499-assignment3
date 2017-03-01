@@ -17,12 +17,15 @@ public class MapClass extends Mapper<LongWritable, Text, Text, IntWritable>{
             throws IOException, InterruptedException {
 
         String line = value.toString();
-        StringTokenizer st = new StringTokenizer(line," ");
+        StringTokenizer st = new StringTokenizer(line,",");
 
-        while(st.hasMoreTokens()){
-            word.set(st.nextToken());
-            context.write(word,one);
-        }
-
+        // throw away movie id token
+        st.nextToken();
+        // add accumulate 1 for userID
+        word.set(st.nextToken());
+        // throw away movie review rating token
+        st.nextToken();
+        // record single occurrence of review by user specified by userID
+        context.write(word,one);
     }
 }
