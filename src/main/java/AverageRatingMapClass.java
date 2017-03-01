@@ -1,14 +1,13 @@
 import java.io.IOException;
 import java.util.StringTokenizer;
 
-import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 
-public class AverageRatingMapClass extends Mapper<LongWritable, Text, Text, IntWritable>{
+public class AverageRatingMapClass extends Mapper<LongWritable, Text, Text, DoubleWritable>{
 
-    private final static IntWritable one = new IntWritable(1);
     private Text word = new Text();
 
     @Override
@@ -24,9 +23,9 @@ public class AverageRatingMapClass extends Mapper<LongWritable, Text, Text, IntW
         // throw away user ID token
         st.nextToken();
         // save rating as an integer
-        int rating = Integer.parseInt(st.nextToken());
+        double rating = Double.parseDouble(st.nextToken());
         // record single occurrence of review by user specified by userID
-        context.write(word,new IntWritable(rating));
+        context.write(word,new DoubleWritable(rating));
 
 /*
         String line = value.toString();
