@@ -11,10 +11,10 @@ import org.apache.hadoop.util.ToolRunner;
 
 // docker pull test comment
 
-public class WordCount extends Configured implements Tool{
+public class NetflixMapReduce extends Configured implements Tool{
 
     public static void main(String[] args) throws Exception{
-        int exitCode = ToolRunner.run(new WordCount(), args);
+        int exitCode = ToolRunner.run(new NetflixMapReduce(), args);
         System.exit(exitCode);
     }
 
@@ -25,8 +25,8 @@ public class WordCount extends Configured implements Tool{
         }
 
         Job job = new Job();
-        job.setJarByClass(WordCount.class);
-        job.setJobName("WordCounter");
+        job.setJarByClass(NetflixMapReduce.class);
+        job.setJobName("Num Reviews By User Counter");
 
         FileInputFormat.addInputPath(job, new Path(args[0]));
         FileOutputFormat.setOutputPath(job, new Path(args[1]));
@@ -35,15 +35,15 @@ public class WordCount extends Configured implements Tool{
         job.setOutputValueClass(IntWritable.class);
         job.setOutputFormatClass(TextOutputFormat.class);
 
-        job.setMapperClass(MapClass.class);
-        job.setReducerClass(ReduceClass.class);
+        job.setMapperClass(NumReviewsMapClass.class);
+        job.setReducerClass(NumReviewsReduceClass.class);
 
         int returnValue = job.waitForCompletion(true) ? 0:1;
 
         if(job.isSuccessful()) {
-            System.out.println("Job was successful");
+            System.out.println("Num Reviews By User Counter job was successful");
         } else if(!job.isSuccessful()) {
-            System.out.println("Job was not successful");
+            System.out.println("Num Reviews By User Counter job was not successful");
         }
 
         return returnValue;
