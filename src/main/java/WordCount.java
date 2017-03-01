@@ -9,6 +9,8 @@ import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
+// docker pull test comment
+
 public class WordCount extends Configured implements Tool{
 
     public static void main(String[] args) throws Exception{
