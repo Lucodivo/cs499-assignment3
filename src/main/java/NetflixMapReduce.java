@@ -1,6 +1,7 @@
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
@@ -62,7 +63,7 @@ public class NetflixMapReduce extends Configured implements Tool{
         FileOutputFormat.setOutputPath(avgRatingJob, new Path(args[1] + "/AverageRating"));
 
         avgRatingJob.setOutputKeyClass(Text.class);
-        avgRatingJob.setOutputValueClass(IntWritable.class);
+        avgRatingJob.setOutputValueClass(DoubleWritable.class);
         avgRatingJob.setOutputFormatClass(TextOutputFormat.class);
 
         avgRatingJob.setMapperClass(AverageRatingMapClass.class);
